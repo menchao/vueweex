@@ -1,0 +1,245 @@
+<template>
+	<view class="tabs">
+		<waterfall column-count="2" column-width="auto" column-gap="10" left-gap="2" right-gap="2">
+			<refresh class="refresh" @refresh="onrefresh" @pullingdown="onpullingdown"
+				:display="refreshing ? 'show' : 'hide'"	>
+				<view class="refresh-view">
+					<image class="refresh-icon" :src="refreshIcon" :style="{width: (refreshing || pulling) ? 0: '30px'}"
+					 :class="{'refresh-icon-active': refreshFlag}"></image>
+					<loading-indicator class="loading-icon" animating="true" v-if="refreshing"></loading-indicator>
+				
+					<text class="loading-text">{{refreshText}}</text>
+				</view>
+			</refresh>
+			<cell class="cell-bg"  v-for="(item,i) in floors" v-bind:key="i" @click="cellClick(item)" >
+				<view class="cell-floor">
+					<text class="title">{{item.title}}</text>
+					<view class="image-section">
+						<image class="image"  v-bind:src="item.pictures[0]"/>
+					</view>
+					<text class="desc">{{item.desc}}</text>
+
+					<text class="comment">{{item.count}} 人说好</text>
+				</view>
+			</cell>
+		</waterfall>
+	</view>
+	<!-- <view class="example">
+		<recycle-list class="list" for="(item, i) in floors" switch="type">
+			<cell-slot case="floor" :key="i" @click="cellClick(item)">
+				<div class="floor">
+					<text class="title">{{item.title}}</text>
+					<text class="desc">{{item.desc}}</text>
+
+					<div class="image-section">
+						<image class="image" :src="source" v-for="(source, i) in item.pictures" :key="i" />
+					</div>
+					<text class="comment">{{item.count}} 人说好</text>
+				</div>
+			</cell-slot>
+		</recycle-list>
+	</view> -->
+</template>
+<script>
+	const dataset = [{
+		type: 'floor',
+		title: '就造专属感，给孩子寻个座椅好玩伴',
+		desc: '犹记得儿时的风筝带着斑斓的色彩在天空飘过；那小河里躲迷藏的鱼虾，还待着小伙伴们一起去捕捉，如今的孩童没有了这些简单且纯粹的娱乐项目，生活在高楼城市中的他们，该当怎样度过自己的童年才是美好的？',
+		pictures: [
+			'https://gw.alicdn.com/tfscom/i3/48292642/TB29OtIakz_F1JjSZFkXXcCaXXa_!!48292642.jpg_250x250q90s200.jpg',
+			'https://gw.alicdn.com/imgextra/i4/706778912/TB2hvwSXBvBIuJjy1zeXXbGBpXa_!!706778912-0-beehive-scenes.jpg_250x250q90s200.jpg',
+			'https://gw.alicdn.com/imgextra/i3/706778912/TB2wX.fcxz9F1JjSZFsXXaCGVXa_!!706778912-0-beehive-scenes.jpg_250x250q90s200.jpg'
+		],
+		count: 237,
+	}, {
+		type: 'floor',
+		title: '睡袍穿不对，脱光也不媚！',
+		desc: '“Ihatemynightgown（我讨厌我的睡袍）.”经典电影《罗马假日》中 ...',
+		pictures: [
+			'https://gw.alicdn.com/imgextra/i3/3044653839/TB2a_nAXgsSMeJjSspdXXXZ4pXa_!!3044653839-0-daren.jpg_250x250q90s200.jpg',
+			'https://gw.alicdn.com/imgextra/i1/3044653839/TB2qrPCXiERMeJjSspiXXbZLFXa_!!3044653839-0-daren.jpg_250x250q90s200.jpg',
+			'https://gw.alicdn.com/imgextra/i1/3044653839/TB2ySjuXgsSMeJjSspeXXa77VXa_!!3044653839-0-beehive-scenes.jpg_250x250q90s200.jpg'
+		],
+		count: 876,
+	}]
+
+	export default {
+		data() {
+			let N = 2
+			const floors = []
+			while (N--) {
+				floors.push(...dataset)
+			}
+			return {
+				floors:floors ,
+				refreshing: false,
+				refreshFlag: false,
+				pulling: false,
+				refreshText: "刷新文本...",
+				refreshIcon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAMAAABg3Am1AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAB5QTFRFcHBw3Nzct7e39vb2ycnJioqK7e3tpqam29vb////D8oK7wAAAAp0Uk5T////////////ALLMLM8AAABxSURBVHja7JVBDoAgDASrjqj//7CJBi90iyYeOHTPMwmFZrHjYyyFYYUy1bwUZqtJIYVxhf1a6u0R7iUvWsCcrEtwJHp8MwMdvh2amHduiZD3rpWId9+BgPd7Cc2LIkPyqvlQvKxKBJ//Qwq/CacAAwDUv0a0YuKhzgAAAABJRU5ErkJggg=="
+			
+			}
+		},
+		methods: {
+
+			cellClick(item) {
+				if (item) {
+					var query = encodeURIComponent(JSON.stringify(item));
+					uni.navigateTo({
+						url:'/pages/weex/list-details?query='+query
+					})
+					console.log("cell被点击传递数据");
+
+				}
+			},
+			onrefresh(e) {
+				console.log("onrefresh...: " + this.refreshing);
+				if(this.refreshing){
+					return;
+				}
+				this.refreshing = true;
+				this.refreshText = "正在刷新...";
+				this.scrollTimer = setTimeout(() => {
+					
+					//模拟数据获取
+					this.refreshing =false;
+					this.pulling = false;
+					this.refreshFlag = false;
+					
+					
+				}, 3000);
+			},
+			onpullingdown(e) {
+				
+				if (this.refreshing) {
+					console.log("onpullingdown: " +this.refreshing);
+					return;
+				}
+			 	this.pulling = false;
+				if (Math.abs(e.pullingDistance) > Math.abs(e.viewHeight)) {
+					this.refreshFlag = true;
+					this.refreshText = "释放立即刷新";
+				} else {
+					this.refreshFlag = false;
+					this.refreshText = "下拉可以刷新";
+				}
+			}
+		}
+	}
+</script>
+<style>
+	.refresh {
+		width: 750upx;
+		height: 64px;
+		justify-content: center;
+		background-color: #52BFE6;
+	}
+	.refresh-view {
+		flex-direction: row;
+		flex-wrap: nowrap;
+		align-items: center;
+		justify-content: center;
+	}
+	
+	.refresh-icon {
+		width: 30px;
+		height: 30px;
+		transition-duration: .5s;
+		transition-property: transform;
+		transform: rotate(0deg);
+		transform-origin: 15px 15px;
+	}
+	
+	.refresh-icon-active {
+		transform: rotate(180deg);
+	}
+	
+	.loading-icon {
+		width: 20px;
+		height: 20px;
+		margin-right: 5px;
+		color: gray;
+	}
+	
+	.loading-text {
+		margin-left: 2px;
+		font-size: 16px;
+		color: #999999;
+	}
+	
+	.loading-more {
+		align-items: center;
+		justify-content: center;
+		padding-top: 14px;
+		padding-bottom: 14px;
+		text-align: center;
+	}
+	
+	.loading-more-text {
+		font-size: 28upx;
+		color: #999;
+	}
+	
+	
+	
+	.tabs {
+		background-color: #FFFFFF;
+	}
+
+	.cell-bg{
+		background-color: #52BFE6;
+		padding-bottom: 10px;
+	}
+	.cell-floor {
+		background-color: #999999;
+		
+	}
+	.list {
+		width: 750px;
+		background-color: #F5F5F5;
+	}
+
+	
+
+	/* 标题 */
+	.title {
+		font-size: 15px;
+		text-align: center;
+		padding: 15px 15px 15px 15px;
+	}
+	.image-section {
+		flex-direction: row;
+		justify-content: center;
+		margin-top: 20px;
+		margin-bottom: 20px;
+	}
+	
+	
+	/* 图片 */
+	.image {
+		width: 100px;
+		height: 120px;
+		
+		
+	}
+      
+
+	.desc {
+		lines: 3;
+		color: #007AFF;
+		font-size: 18px;
+		padding-left: 5px;
+		padding-right: 5px;
+	}
+
+
+
+	.comment {
+		color: #52bfe6;
+		font-size: 22px;
+		text-align: right;
+		padding-right: 50px;
+		margin-top: 25px;
+		margin-bottom: 20px;
+	}
+</style>

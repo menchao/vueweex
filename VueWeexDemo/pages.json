@@ -1,0 +1,54 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/weex/weex",
+			"style": {
+				"navigationBarTitleText": "uni-app"
+			}
+		},{
+			"path": "pages/home/home",
+			"style": {
+				"navigationBarTitleText": "uni-app"
+			}
+		},{
+			"path": "pages/mine/mine",
+			"style": {
+				"navigationBarTitleText": "uni-app"
+			}
+		},{
+			"path": "pages/weex/list-details",
+			"style": {
+				"navigationBarTitleText": "详情"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	},
+	"tabBar":{
+		"backgroundColor":"#F8F8F8",
+		"borderStyle":"white",
+		"selectedColor": "#007AFF",
+		"color":"#3F536E",
+		"list":[{
+		    "iconPath":"static/tabbar/component.png",
+			"selectedIconPath": "/static/tabbar/componentHL.png",
+			"pagePath":"pages/weex/weex",
+			"text":"weex"
+		  },{
+			"iconPath":"/static/tabbar/component.png",
+			"selectedIconPath": "/static/tabbar/componentHL.png",
+			"pagePath":"pages/home/home",
+			"text":"首页"
+		  },{
+		    "iconPath":"static/tabbar/component.png",
+			"selectedIconPath": "/static/tabbar/componentHL.png",
+			"pagePath":"pages/mine/mine",
+			"text":"我的"
+		  }
+		]
+	}
+}

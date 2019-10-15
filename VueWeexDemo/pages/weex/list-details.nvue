@@ -1,0 +1,46 @@
+<template>
+	<view>
+		<div>
+			<text>{{title}}</text>
+			<button type="primary" @click="clickMe">阿甘说的</button>
+		</div>
+		
+	</view>
+</template>
+
+<script>
+	export default {
+		data(){
+			return{
+				title:"ag阿甘"
+			}
+		},
+		onLoad(event) {
+			console.log("onLoad..."); 
+			// 目前在某些平台参数会被主动 decode，暂时这样处理。
+			try {
+				this.banner = JSON.parse(decodeURIComponent(event.query));
+			} catch (error) {
+				this.banner = JSON.parse(event.query);
+			}
+		
+			uni.setNavigationBarTitle({
+				title: this.banner.title
+			});
+			
+			
+		},
+		methods:{
+			clickMe(){
+				console.log("clickMe ..."); 
+				uni.navigateBack({
+					
+				});
+			}
+		}
+	}
+</script>
+
+<style>
+
+</style>
